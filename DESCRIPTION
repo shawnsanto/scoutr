@@ -1,0 +1,21 @@
+Package: scoutr
+Type: Package
+Title: Soccer Data Manipulation and Visualization
+Version: 0.1.0
+Authors@R: person("Shawn", "Santo", email = "shawn.santo@duke.edu",
+                  role = c("aut", "cre"))
+Depends: R (>= 3.6.0)
+Description: A complete and consistent set of functions for reading, 
+    manipulating, and visualizing Wyscout soccer data in R.
+URL: https://github.com/shawnsanto/scoutr
+License: GPL (>=2)
+Imports:
+    dplyr,
+    purrr,
+    tidyr,
+    jsonlite,
+    janitor
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1

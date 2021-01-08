@@ -1,0 +1,53 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+options(tibble.print_min = 5, tibble.print_max = 5)
+```
+
+# scoutr <a href=''><img src='man/figures/logo.png' align="right" height="139" /></a>
+
+<!-- badges: start -->
+![GitHub R package version](https://img.shields.io/github/r-package/v/shawnsanto/scoutr)
+<!-- badges: end -->
+
+## Overview
+
+A complete and consistent set of functions for reading, manipulating, and 
+visualizing Wyscout soccer data in R.
+
+All public Wyscout data is available at [https://figshare.com/collections/Soccer_match_event_dataset/4415000/2](https://figshare.com/collections/Soccer_match_event_dataset/4415000/2)
+
+## Installation
+
+The package is not available on CRAN, so please install the development version.
+
+```{r, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("shawnsanto/scoutr")
+```
+
+## Usage
+
+```{r message = FALSE}
+library(scoutr)
+
+read_events(system.file("extdata", "events_england.json", package = "scoutr"))
+
+read_teams(system.file("extdata", "teams.json", package = "scoutr"))
+```
+
+## References
+
+Pappalardo, L., Cintia, P., Rossi, A. et al. A public data set of 
+spatio-temporal match events in soccer competitions. Sci Data 6, 236 (2019). [https://doi.org/10.1038/s41597-019-0247-7](https://doi.org/10.1038/s41597-019-0247-7)
+
