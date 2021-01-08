@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 ![GitHub R package
-version](https://img.shields.io/github/r-package/v/shawnsanto/scoutr)
+version](https://img.shields.io/github/r-package/v/shawnsanto/scoutr?style=for-the-badge)
 <!-- badges: end -->
 
 ## Overview
