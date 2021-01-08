@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# scoutr <a href=''><img src='man/figures/logo.png' align="right" height="200" /></a>
+# scoutr <a href=''><img src='man/figures/logo.png' align="right" height="165" /></a>
 
 <!-- badges: start -->
 
