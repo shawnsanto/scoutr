@@ -5,8 +5,10 @@
 
 <!-- badges: start -->
 
-![GitHub R package
-version](https://img.shields.io/github/r-package/v/shawnsanto/scoutr?style=for-the-badge)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![R build
+status](https://github.com/shawnsanto/scoutr/workflows/R-CMD-check/badge.svg)](https://github.com/shawnsanto/scoutr/actions)
 <!-- badges: end -->
 
 ## Overview
