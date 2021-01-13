@@ -33,35 +33,44 @@ devtools::install_github("shawnsanto/scoutr")
 
 ``` r
 library(scoutr)
+library(dplyr)
 
-read_events(system.file("extdata", "events_england.json", package = "scoutr"))
+# read and preview some event data
+events <- read_events(system.file("extdata", "events_england.json", package = "scoutr"))
 #>   Step (1/3): Reading JSON data and converting to tibble...
 #>   Step (2/3): Tidying tag variables...
 #>   Step (3/3): Tidying event pitch locations...
 #>   Happy scouting!
-#> # A tibble: 1,768 x 19
-#>   id    match_id match_period team_id event_id event_name sub_event_id
-#>   <chr> <chr>    <chr>        <chr>   <chr>    <chr>      <chr>       
-#> 1 1779… 2499719  1H           1609    8        Pass       85          
-#> 2 1779… 2499719  1H           1609    8        Pass       83          
-#> 3 1779… 2499719  1H           1609    8        Pass       82          
-#> 4 1779… 2499719  1H           1609    8        Pass       82          
-#> 5 1779… 2499719  1H           1609    8        Pass       85          
-#> # … with 1,763 more rows, and 12 more variables: sub_event_name <chr>,
-#> #   player_id <chr>, event_sec <dbl>, start_x <int>, start_y <int>,
-#> #   end_x <int>, end_y <int>, tag_id_1 <chr>, tag_id_2 <chr>, tag_id_3 <chr>,
-#> #   tag_id_4 <chr>, tag_id_5 <chr>
 
-read_teams(system.file("extdata", "teams.json", package = "scoutr"))
-#> # A tibble: 142 x 9
-#>   wy_id official_name name  area_name city  area_id area_alpha_2 area_alpha_3
-#>   <chr> <chr>         <chr> <chr>     <chr> <chr>   <chr>        <chr>       
-#> 1 1613  "Newcastle U… "New… England   Newc… 0       ""           XEN         
-#> 2 692   "Real Club C… "Cel… Spain     Vigo  724     "ES"         ESP         
-#> 3 691   "Reial Club … "Esp… Spain     Barc… 724     "ES"         ESP         
-#> 4 696   "Deportivo A… "Dep… Spain     Vito… 724     "ES"         ESP         
-#> 5 695   "Levante UD"  "Lev… Spain     Vale… 724     "ES"         ESP         
-#> # … with 137 more rows, and 1 more variable: type <chr>
+events %>%
+  select(event_sec:end_y)
+#> # A tibble: 1,768 x 5
+#>   event_sec start_x start_y end_x end_y
+#>       <dbl>   <int>   <int> <int> <int>
+#> 1      2.76      49      49    31    78
+#> 2      4.95      31      78    51    75
+#> 3      6.54      51      75    35    71
+#> 4      8.14      35      71    41    95
+#> 5     10.3       41      95    72    88
+#> # … with 1,763 more rows
+
+
+# transform pitch locations
+events %>%
+  select(event_sec:end_y) %>%
+  transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
+                      dim = c(105, 70), units = "meters")
+#>   Attributes added: 'units', 'pitch_dimensions'.
+#>   Pitch dimensions: (105 X 70) meters
+#> # A tibble: 1,768 x 5
+#>   event_sec start_x start_y end_x end_y
+#>       <dbl>   <dbl>   <dbl> <dbl> <dbl>
+#> 1      2.76    51.4    34.3  32.6  54.6
+#> 2      4.95    32.6    54.6  53.6  52.5
+#> 3      6.54    53.6    52.5  36.8  49.7
+#> 4      8.14    36.8    49.7  43.0  66.5
+#> 5     10.3     43.0    66.5  75.6  61.6
+#> # … with 1,763 more rows
 ```
 
 ## References
