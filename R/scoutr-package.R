@@ -1,4 +1,4 @@
-#' scoutr: A package for soccer data manipulation and visualization
+#' \code{scoutr}: A package for soccer data manipulation and visualization
 #'
 #' A complete and consistent set of functions for reading, manipulating, and
 #' visualizing Wyscout soccer data in R.
@@ -27,3 +27,5 @@
 #' @docType package
 #' @name scoutr-package
 NULL
+
+utils::globalVariables(c("."))

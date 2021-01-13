@@ -3,7 +3,7 @@
 \docType{package}
 \name{scoutr-package}
 \alias{scoutr-package}
-\title{scoutr: A package for soccer data manipulation and visualization}
+\title{\code{scoutr}: A package for soccer data manipulation and visualization}
 \description{
 A complete and consistent set of functions for reading, manipulating, and
 visualizing Wyscout soccer data in R.
