@@ -33,6 +33,7 @@
 #' @import purrr
 #' @importFrom jsonlite read_json
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @export
 
 read_players <- function(file, tidy_tibble = TRUE) {
@@ -45,15 +46,17 @@ read_players <- function(file, tidy_tibble = TRUE) {
 
   map_df(players, unlist) %>%
     clean_names() %>%
-    rename(passport_area_alpha_3 = passport_area_alpha3code,
-           passport_area_alpha_2 = passport_area_alpha2code) %>%
-    rename(birth_area_alpha_3 = birth_area_alpha3code,
-           birth_area_alpha_2 = birth_area_alpha2code) %>%
-    mutate(height     = as.integer(height),
-           weight     = as.integer(weight),
-           birth_date = as.Date(birth_date)) %>%
-    select(wy_id, first_name, middle_name, last_name, short_name, birth_date,
-           height, weight, foot, current_team_id, current_national_team_id,
+    rename(passport_area_alpha_3 = .data$passport_area_alpha3code,
+           passport_area_alpha_2 = .data$passport_area_alpha2code) %>%
+    rename(birth_area_alpha_3 = .data$birth_area_alpha3code,
+           birth_area_alpha_2 = .data$birth_area_alpha2code) %>%
+    mutate(height     = as.integer(.data$height),
+           weight     = as.integer(.data$weight),
+           birth_date = as.Date(.data$birth_date)) %>%
+    select(.data$wy_id, .data$first_name, .data$middle_name, .data$last_name,
+           .data$short_name, .data$birth_date,
+           .data$height, .data$weight, .data$foot, .data$current_team_id,
+           .data$current_national_team_id,
            contains("role_"), contains("passport_area"),
            contains("birth_area_"))
 }

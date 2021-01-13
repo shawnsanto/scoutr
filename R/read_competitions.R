@@ -33,6 +33,7 @@
 #' @import purrr
 #' @importFrom jsonlite read_json
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @export
 
 read_competitions <- function(file, tidy_tibble = TRUE) {
@@ -46,7 +47,7 @@ read_competitions <- function(file, tidy_tibble = TRUE) {
   competitions %>%
     map_df(unlist) %>%
     clean_names() %>%
-    rename(area_alpha_3 = area_alpha3code,
-           area_alpha_2 = area_alpha2code) %>%
-    select(wy_id, name, format, contains("area"), type)
+    rename(area_alpha_3 = .data$area_alpha3code,
+           area_alpha_2 = .data$area_alpha2code) %>%
+    select(.data$wy_id, .data$name, .data$format, contains("area"), .data$type)
 }

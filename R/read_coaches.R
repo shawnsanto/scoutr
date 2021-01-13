@@ -33,6 +33,7 @@
 #' @import purrr
 #' @importFrom jsonlite read_json
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @export
 
 read_coaches <- function(file, tidy_tibble = TRUE) {
@@ -46,11 +47,12 @@ read_coaches <- function(file, tidy_tibble = TRUE) {
   coaches %>%
     map_df(unlist) %>%
     clean_names() %>%
-    rename(passport_area_alpha_3 = passport_area_alpha3code,
-           passport_area_alpha_2 = passport_area_alpha2code) %>%
-    rename(birth_area_alpha_3 = birth_area_alpha3code,
-           birth_area_alpha_2 = birth_area_alpha2code) %>%
-    mutate(birth_date = as.Date(birth_date)) %>%
-    select(wy_id, first_name, middle_name, last_name, short_name, birth_date,
-           current_team_id, contains("passport_area"), contains("birth_area_"))
+    rename(passport_area_alpha_3 = .data$passport_area_alpha3code,
+           passport_area_alpha_2 = .data$passport_area_alpha2code) %>%
+    rename(birth_area_alpha_3 = .data$birth_area_alpha3code,
+           birth_area_alpha_2 = .data$birth_area_alpha2code) %>%
+    mutate(birth_date = as.Date(.data$birth_date)) %>%
+    select(.data$wy_id, .data$first_name, .data$middle_name, .data$last_name,
+           .data$short_name, .data$birth_date, .data$current_team_id,
+           contains("passport_area"), contains("birth_area_"))
 }

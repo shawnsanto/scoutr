@@ -44,6 +44,7 @@
 #' @import tidyr
 #' @importFrom jsonlite read_json fromJSON
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @export
 
 read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
@@ -70,14 +71,14 @@ read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
     step <- step + 1
     events <- events %>%
       mutate(row_id = 1:nrow(.)) %>%
-      unnest(cols = tags, names_sep = "_", keep_empty = TRUE) %>%
-      mutate(tag_id_name = paste0("tag_id_", unlist(lapply(rle(row_id)$lengths,
+      unnest(cols = .data$tags, names_sep = "_", keep_empty = TRUE) %>%
+      mutate(tag_id_name = paste0("tag_id_", unlist(lapply(rle(.data$row_id)$lengths,
                                                           seq, from = 1)))) %>%
-      pivot_wider(names_from = tag_id_name, values_from = tags_id) %>%
-      select(-row_id)
+      pivot_wider(names_from = .data$tag_id_name, values_from = .data$tags_id) %>%
+      select(-.data$row_id)
   } else {
     events <- events %>%
-      select(-tags)
+      select(-.data$tags)
   }
 
   # fix positions
@@ -85,25 +86,27 @@ read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
   cat("  Step", paste0('(',step,'/',total_steps,'):'), msg)
   events_temp <- events %>%
     mutate(row_id = 1:nrow(.)) %>%
-    unnest(cols = positions, keep_empty = TRUE) %>%
-    mutate(loc_tag = paste0("loc_", unlist(lapply(rle(row_id)$lengths,
+    unnest(cols = .data$positions, keep_empty = TRUE) %>%
+    mutate(loc_tag = paste0("loc_", unlist(lapply(rle(.data$row_id)$lengths,
                                                  seq, from = 1))))
 
   end_positions <- events_temp %>%
-    filter(loc_tag == "loc_2") %>%
-    select(y, x, row_id) %>%
-    rename(end_y = y, end_x = x)
+    filter(.data$loc_tag == "loc_2") %>%
+    select(.data$y, .data$x, .data$row_id) %>%
+    rename(end_y = .data$y, end_x = .data$x)
 
   events <- events_temp %>%
-    filter(loc_tag == "loc_1") %>%
-    rename(start_y = y, start_x = x) %>%
+    filter(.data$loc_tag == "loc_1") %>%
+    rename(start_y = .data$y, start_x = .data$x) %>%
     left_join(end_positions, by = "row_id")
 
   cat("  Happy scouting!")
 
   events %>%
-    select(id, match_id, match_period, team_id, event_id, event_name,
-           sub_event_id, sub_event_name, player_id, event_sec, start_x, start_y,
-           end_x, end_y, contains("tag_id")) %>%
+    select(.data$id, .data$match_id, .data$match_period, .data$team_id,
+           .data$event_id, .data$event_name,
+           .data$sub_event_id, .data$sub_event_name, .data$player_id,
+           .data$event_sec, .data$start_x, .data$start_y,
+           .data$end_x, .data$end_y, contains("tag_id")) %>%
     mutate_at(vars(contains("id")), as.character)
 }

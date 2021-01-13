@@ -37,6 +37,7 @@
 #' @import tidyr
 #' @importFrom jsonlite read_json
 #' @importFrom janitor clean_names
+#' @importFrom rlang .data
 #' @export
 
 read_matches <- function(file, tidy_tibble = TRUE) {
@@ -46,7 +47,7 @@ read_matches <- function(file, tidy_tibble = TRUE) {
   if (!tidy_tibble) {
     return(matches)
   }
-
+  side <- teamId <- score <- NULL
   get_team_info <- function(x) {
     map_df(x$teamsData, `[`, c("side", "teamId", "score")) %>%
       pivot_wider(names_from = side, values_from = teamId:score)
@@ -58,11 +59,12 @@ read_matches <- function(file, tidy_tibble = TRUE) {
                            "seasonId", "roundId", "status")),
     map_df(matches, get_team_info)) %>%
     clean_names() %>%
-    rename(game_week = gameweek,
-           date_utc  = dateutc) %>%
+    rename(game_week = .data$gameweek,
+           date_utc  = .data$dateutc) %>%
     mutate_all(as.character) %>%
     mutate_at(vars(starts_with("score_")), as.integer) %>%
-    select(wy_id, date, date_utc, label, winner, starts_with("team_id"),
-           starts_with("score"), duration, venue, game_week, season_id,
-           round_id, competition_id, status)
+    select(.data$wy_id, .data$date, .data$date_utc, .data$label, .data$winner,
+           starts_with("team_id"), starts_with("score"), .data$duration,
+           .data$venue, .data$game_week, .data$season_id,
+           .data$round_id, .data$competition_id, .data$status)
 }
