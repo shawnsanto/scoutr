@@ -100,7 +100,7 @@ read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
     rename(start_y = .data$y, start_x = .data$x) %>%
     left_join(end_positions, by = "row_id")
 
-  cat("  Happy scouting!")
+  cat("  Happy scouting!\n\n")
 
   events %>%
     select(.data$id, .data$match_id, .data$match_period, .data$team_id,
