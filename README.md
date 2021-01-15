@@ -21,7 +21,7 @@ All public Wyscout data is available at
 
 ## Installation
 
-The package is not available on CRAN, so please install the development
+The package is not available on CRAN, please install the development
 version.
 
 ``` r

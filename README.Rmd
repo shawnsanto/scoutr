@@ -30,7 +30,7 @@ All public Wyscout data is available at [https://figshare.com/collections/Soccer
 
 ## Installation
 
-The package is not available on CRAN, so please install the development version.
+The package is not available on CRAN, please install the development version.
 
 ```{r, eval = FALSE}
 # install.packages("devtools")
