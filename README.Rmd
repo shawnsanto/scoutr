@@ -49,12 +49,17 @@ events <- read_events(system.file("extdata", "events_england.json", package = "s
 events %>%
   select(event_sec:end_y)
 
-
 # transform pitch locations
 events %>%
   select(event_sec:end_y) %>%
   transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
                       dim = c(105, 70), units = "meters")
+
+# define possessions
+events %>% 
+  select(match_id, event_name, team_id) %>% 
+  encode_possession_sequence(event_var = "event_name", team_var = "team_id") %>% 
+  print(n = 20)
 ```
 
 ## References

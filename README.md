@@ -54,7 +54,6 @@ events %>%
 #> 5     10.3       41      95    72    88
 #> # … with 1,763 more rows
 
-
 # transform pitch locations
 events %>%
   select(event_sec:end_y) %>%
@@ -71,6 +70,36 @@ events %>%
 #> 4      8.14    36.8    49.7  43.0  66.5
 #> 5     10.3     43.0    66.5  75.6  61.6
 #> # … with 1,763 more rows
+
+# define possessions
+events %>% 
+  select(match_id, event_name, team_id) %>% 
+  encode_possession_sequence(event_var = "event_name", team_var = "team_id") %>% 
+  print(n = 20)
+#> # A tibble: 1,768 x 5
+#>    match_id event_name team_id possession_id possession_seq
+#>    <chr>    <chr>      <chr>           <dbl>          <int>
+#>  1 2499719  Pass       1609                1              1
+#>  2 2499719  Pass       1609                1              2
+#>  3 2499719  Pass       1609                1              3
+#>  4 2499719  Pass       1609                1              4
+#>  5 2499719  Pass       1609                1              5
+#>  6 2499719  Pass       1609                1              6
+#>  7 2499719  Pass       1631                2              1
+#>  8 2499719  Duel       1631                2              2
+#>  9 2499719  Duel       1609                2              3
+#> 10 2499719  Pass       1609                3              1
+#> 11 2499719  Pass       1609                3              2
+#> 12 2499719  Pass       1609                3              3
+#> 13 2499719  Duel       1631                3              4
+#> 14 2499719  Duel       1609                3              5
+#> 15 2499719  Pass       1609                3              6
+#> 16 2499719  Pass       1631                4              1
+#> 17 2499719  Pass       1631                4              2
+#> 18 2499719  Pass       1631                4              3
+#> 19 2499719  Pass       1631                4              4
+#> 20 2499719  Pass       1631                4              5
+#> # … with 1,748 more rows
 ```
 
 ## References
