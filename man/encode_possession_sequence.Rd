@@ -2,7 +2,7 @@
 % Please edit documentation in R/encode_possession_sequence.R
 \name{encode_possession_sequence}
 \alias{encode_possession_sequence}
-\title{Encode single match possessions}
+\title{Encode single-match possessions}
 \usage{
 encode_possession_sequence(data, event_var, team_var, match = NULL)
 }

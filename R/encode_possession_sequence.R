@@ -1,4 +1,4 @@
-#' Encode single match possessions
+#' Encode single-match possessions
 #'
 #' This function encodes possession sequences for a single match using event
 #' data.
