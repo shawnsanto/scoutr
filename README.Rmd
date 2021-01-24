@@ -49,11 +49,12 @@ events <- read_events(system.file("extdata", "events_england.json", package = "s
 events %>%
   select(event_sec:end_y)
 
-# transform pitch locations
+# transform pitch locations and create sf object
 events %>%
   select(event_sec:end_y) %>%
   transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
-                      dim = c(105, 70), units = "meters")
+                      dim = c(105, 70), units = "meters") %>% 
+  link_locations(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
 
 # define possessions
 events %>% 

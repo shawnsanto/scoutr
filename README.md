@@ -54,21 +54,27 @@ events %>%
 #> 5     10.3       41      95    72    88
 #> # … with 1,763 more rows
 
-# transform pitch locations
+# transform pitch locations and create sf object
 events %>%
   select(event_sec:end_y) %>%
   transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
-                      dim = c(105, 70), units = "meters")
+                      dim = c(105, 70), units = "meters") %>% 
+  link_locations(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
 #>   Attributes added: 'units', 'pitch_dimensions'.
 #>   Pitch dimensions: (105 X 70) meters
-#> # A tibble: 1,768 x 5
-#>   event_sec start_x start_y end_x end_y
-#>       <dbl>   <dbl>   <dbl> <dbl> <dbl>
-#> 1      2.76    51.4    34.3  32.6  54.6
-#> 2      4.95    32.6    54.6  53.6  52.5
-#> 3      6.54    53.6    52.5  36.8  49.7
-#> 4      8.14    36.8    49.7  43.0  66.5
-#> 5     10.3     43.0    66.5  75.6  61.6
+#> Simple feature collection with 1768 features and 5 fields
+#> geometry type:  LINESTRING
+#> dimension:      XY
+#> bbox:           xmin: 0 ymin: 0 xmax: 105 ymax: 70
+#> CRS:            NA
+#> # A tibble: 1,768 x 6
+#>   event_sec start_x start_y end_x end_y                 geometry
+#>       <dbl>   <dbl>   <dbl> <dbl> <dbl>             <LINESTRING>
+#> 1      2.76    51.4    34.3  32.6  54.6 (51.45 34.3, 32.55 54.6)
+#> 2      4.95    32.6    54.6  53.6  52.5 (32.55 54.6, 53.55 52.5)
+#> 3      6.54    53.6    52.5  36.8  49.7 (53.55 52.5, 36.75 49.7)
+#> 4      8.14    36.8    49.7  43.0  66.5 (36.75 49.7, 43.05 66.5)
+#> 5     10.3     43.0    66.5  75.6  61.6  (43.05 66.5, 75.6 61.6)
 #> # … with 1,763 more rows
 
 # define possessions

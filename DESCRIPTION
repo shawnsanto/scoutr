@@ -15,6 +15,7 @@ Imports:
     tidyr,
     jsonlite,
     janitor,
+    sf,
     rlang
 Encoding: UTF-8
 LazyData: true
