@@ -36,7 +36,8 @@ library(scoutr)
 library(dplyr)
 
 # read and preview some event data
-events <- read_events(system.file("extdata", "events_england.json", package = "scoutr"))
+path <- system.file("extdata", "events_england.json", package = "scoutr")
+events <- fc_read_events(path)
 #>   Step (1/3): Reading JSON data and converting to tibble...
 #>   Step (2/3): Tidying tag variables...
 #>   Step (3/3): Tidying event pitch locations...
@@ -57,11 +58,13 @@ events %>%
 # transform pitch locations and create sf object
 events %>%
   select(event_sec:end_y) %>%
-  transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
-                      dim = c(105, 70), units = "meters") %>% 
-  link_locations(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
-#>   Attributes added: 'units', 'pitch_dimensions'.
-#>   Pitch dimensions: (105 X 70) meters
+  fc_locations_transform(x = c("start_x", "end_x"), 
+                         y = c("start_y", "end_y"),
+                         dim = c(105, 70), units = "meters") %>% 
+  fc_locations_link(start_loc = c("start_x", "start_y"), 
+                    end_loc   = c("end_x", "end_y"))
+#> Attributes added: 'units', 'pitch_dimensions'
+#> Pitch dimensions: (105 X 70) meters
 #> Simple feature collection with 1768 features and 5 fields
 #> geometry type:  LINESTRING
 #> dimension:      XY
@@ -80,7 +83,7 @@ events %>%
 # define possessions
 events %>% 
   select(match_id, event_name, team_id) %>% 
-  encode_possession_sequence(event_var = "event_name", team_var = "team_id") %>% 
+  fc_sequence_possession(event_var = "event_name", team_var = "team_id") %>% 
   print(n = 20)
 #> # A tibble: 1,768 x 5
 #>    match_id event_name team_id possession_id possession_seq
@@ -106,6 +109,26 @@ events %>%
 #> 19 2499719  Pass       1631                4              4
 #> 20 2499719  Pass       1631                4              5
 #> # … with 1,748 more rows
+
+# compute velocities
+events %>%
+  fc_locations_transform(x = c("start_x", "end_x"), y = c("start_y", "end_y")) %>%
+  fc_sequence_possession(event_var = "event_name", team_var = "team_id") %>%
+  select(match_id, match_period, possession_id, event_sec:end_y) %>% 
+  fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"),
+                    direction = c("east_west", "north_south")) %>% 
+  select(-match_period, -(start_x:end_y))
+#> Attributes added: 'units', 'pitch_dimensions'
+#> Pitch dimensions: (105 X 70) meters
+#> # A tibble: 1,768 x 6
+#>   match_id possession_id event_sec duration east_west_veloci… north_south_veloc…
+#>   <chr>            <dbl>     <dbl>    <dbl>             <dbl>              <dbl>
+#> 1 2499719              1      2.76     2.19              8.64               9.28
+#> 2 2499719              1      4.95     1.60             13.2                1.32
+#> 3 2499719              1      6.54     1.60             10.5                1.75
+#> 4 2499719              1      8.14     2.16              2.92               7.78
+#> 5 2499719              1     10.3      2.25             14.5                2.18
+#> # … with 1,763 more rows
 ```
 
 ## References

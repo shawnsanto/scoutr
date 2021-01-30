@@ -1,8 +1,8 @@
-#' Read Wyscout soccer teams data
+#' Read Wyscout soccer competitions data
 #'
-#' This function reads and processes the Wyscout \code{teams} data.
+#' This function reads and processes the Wyscout \code{competitions} data.
 #'
-#' @param file File path to \code{teams} JSON data.
+#' @param file File path to \code{competitions} JSON data.
 #' @param tidy_tibble Logical value indicating if the returned object should be
 #'   a tidy tibble or not. If \code{FALSE}, a list is returned.
 #'
@@ -24,10 +24,10 @@
 #' @seealso
 #'
 #' @examples
-#' file_path <- system.file("extdata", "teams.json", package = "scoutr")
+#' file_path <- system.file("extdata", "competitions.json", package = "scoutr")
 #'
-#' teams <- read_teams(file_path)
-#' teams_list <- read_teams(file_path, tidy_tibble = FALSE)
+#' competitions <- fc_read_competitions(file_path)
+#' competitions_list <- fc_read_competitions(file_path, tidy_tibble = FALSE)
 #'
 #' @import dplyr
 #' @import purrr
@@ -36,20 +36,18 @@
 #' @importFrom rlang .data
 #' @export
 
-read_teams <- function(file, tidy_tibble = TRUE) {
+fc_read_competitions <- function(file, tidy_tibble = TRUE) {
 
-  teams <- read_json(file)
+  competitions <- read_json(file)
 
   if (!tidy_tibble) {
-    return(teams)
+    return(competitions)
   }
 
-  teams %>%
+  competitions %>%
     map_df(unlist) %>%
     clean_names() %>%
     rename(area_alpha_3 = .data$area_alpha3code,
            area_alpha_2 = .data$area_alpha2code) %>%
-    select(.data$wy_id, .data$official_name, .data$name, .data$area_name,
-           .data$city, .data$area_id, .data$area_alpha_2,
-           .data$area_alpha_3, .data$type)
+    select(.data$wy_id, .data$name, .data$format, contains("area"), .data$type)
 }

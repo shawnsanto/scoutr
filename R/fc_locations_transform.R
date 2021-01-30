@@ -32,11 +32,11 @@
 #'
 #' # read event data given in package
 #' file_path <- system.file("extdata", "events_england.json", package = "scoutr")
-#' events <- read_events(file_path)
+#' events <- fc_read_events(file_path)
 #'
 #' result <- events %>%
 #'   select(event_sec:end_y) %>%
-#'   transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"))
+#'   fc_locations_transform(x = c("start_x", "end_x"), y = c("start_y", "end_y"))
 #'
 #' # verify attributes
 #' attr(result, "pitch_dimensions")
@@ -45,16 +45,16 @@
 #' # transform to meters, then transform back
 #' events %>%
 #'   select(event_sec:end_y) %>%
-#'   transform_locations(x = c("start_x", "end_x"),
-#'                       y = c("start_y", "end_y")) %>%
-#'   transform_locations(x = c("start_x", "end_x"),
-#'                       y = c("start_y", "end_y"),
-#'                       dim = c(100, 100), units = "percent")
+#'   fc_locations_transform(x = c("start_x", "end_x"),
+#'                          y = c("start_y", "end_y")) %>%
+#'   fc_locations_transform(x = c("start_x", "end_x"),
+#'                          y = c("start_y", "end_y"),
+#'                          dim = c(100, 100), units = "percent")
 #'
 #' @import dplyr
 #' @export
 
-transform_locations <- function(data, x, y, dim = c(105, 70), units = "meters") {
+fc_locations_transform <- function(data, x, y, dim = c(105, 70), units = "meters") {
 
   if (is.null(attr(data, which = "pitch_dimensions"))) {
     result <- data %>%
@@ -63,8 +63,8 @@ transform_locations <- function(data, x, y, dim = c(105, 70), units = "meters") 
 
     attr(result, which = "units") <- units
     attr(result, which = "pitch_dimensions") <- dim
-    cat("  Attributes added: 'units', 'pitch_dimensions'.\n")
-    cat("  Pitch dimensions:", paste0("(", dim[1], " X ", dim[2], ")"), units, "\n")
+    cat("Attributes added: 'units', 'pitch_dimensions'\n")
+    cat("Pitch dimensions:", paste0("(", dim[1], " X ", dim[2], ")"), units, "\n")
 
     return(result)
   } else {
@@ -77,8 +77,8 @@ transform_locations <- function(data, x, y, dim = c(105, 70), units = "meters") 
     attr(result, which = "units") <- units
     attr(result, which = "pitch_dimensions") <- dim
 
-    cat("  Attributes modified: 'units', 'pitch_dimensions'.\n")
-    cat("  Pitch dimensions:", paste0("(", dim[1], " X ", dim[2], ")"), units, "\n")
+    cat("Attributes modified: 'units', 'pitch_dimensions'\n")
+    cat("Pitch dimensions:", paste0("(", dim[1], " X ", dim[2], ")"), units, "\n")
 
     return(result)
   }

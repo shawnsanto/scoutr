@@ -36,8 +36,8 @@
 #' @examples
 #' file_path <- system.file("extdata", "events_england.json", package = "scoutr")
 #'
-#' events <- read_events(file_path)
-#' events_list <- read_events(file_path, tidy_tibble = FALSE)
+#' events <- fc_read_events(file_path)
+#' events_list <- fc_read_events(file_path, tidy_tibble = FALSE)
 #'
 #' @import dplyr
 #' @import purrr
@@ -47,7 +47,7 @@
 #' @importFrom rlang .data
 #' @export
 
-read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
+fc_read_events <- function(file, tidy_tibble = TRUE, keep_tags = TRUE) {
 
   if (!tidy_tibble) {
     return(read_json(file))

@@ -44,7 +44,8 @@ library(scoutr)
 library(dplyr)
 
 # read and preview some event data
-events <- read_events(system.file("extdata", "events_england.json", package = "scoutr"))
+path <- system.file("extdata", "events_england.json", package = "scoutr")
+events <- fc_read_events(path)
 
 events %>%
   select(event_sec:end_y)
@@ -52,15 +53,26 @@ events %>%
 # transform pitch locations and create sf object
 events %>%
   select(event_sec:end_y) %>%
-  transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y"),
-                      dim = c(105, 70), units = "meters") %>% 
-  link_locations(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
+  fc_locations_transform(x = c("start_x", "end_x"), 
+                         y = c("start_y", "end_y"),
+                         dim = c(105, 70), units = "meters") %>% 
+  fc_locations_link(start_loc = c("start_x", "start_y"), 
+                    end_loc   = c("end_x", "end_y"))
 
 # define possessions
 events %>% 
   select(match_id, event_name, team_id) %>% 
-  encode_possession_sequence(event_var = "event_name", team_var = "team_id") %>% 
+  fc_sequence_possession(event_var = "event_name", team_var = "team_id") %>% 
   print(n = 20)
+
+# compute velocities
+events %>%
+  fc_locations_transform(x = c("start_x", "end_x"), y = c("start_y", "end_y")) %>%
+  fc_sequence_possession(event_var = "event_name", team_var = "team_id") %>%
+  select(match_id, match_period, possession_id, event_sec:end_y) %>% 
+  fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"),
+                    direction = c("east_west", "north_south")) %>% 
+  select(-match_period, -(start_x:end_y))
 ```
 
 ## References

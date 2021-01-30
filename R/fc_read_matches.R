@@ -29,8 +29,8 @@
 #' @examples
 #' file_path <- system.file("extdata", "matches_england.json", package = "scoutr")
 #'
-#' matches <- read_matches(file_path)
-#' matches_list <- read_matches(file_path, tidy_tibble = FALSE)
+#' matches <- fc_read_matches(file_path)
+#' matches_list <- fc_read_matches(file_path, tidy_tibble = FALSE)
 #'
 #' @import dplyr
 #' @import purrr
@@ -40,7 +40,7 @@
 #' @importFrom rlang .data
 #' @export
 
-read_matches <- function(file, tidy_tibble = TRUE) {
+fc_read_matches <- function(file, tidy_tibble = TRUE) {
 
   matches <- read_json(file)
 

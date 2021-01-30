@@ -31,15 +31,15 @@
 #'
 #' # read event and teams data given in package
 #' events <- system.file("extdata", "events_england.json", package = "scoutr") %>%
-#'   read_events()
+#'   fc_read_events()
 #' teams <- system.file("extdata", "teams.json", package = "scoutr") %>%
-#'   read_teams()
+#'   fc_read_teams()
 #'
 #' # join events and teams data
 #' x <- left_join(events, teams, by = c("team_id" = "wy_id")) %>%
 #'   select(match_id, event_name, sub_event_name, team_id, name)
 #'
-#' encode_possession_sequence(x, event_var = "event_name", team_var = "name")
+#' fc_sequence_possession(x, event_var = "event_name", team_var = "name")
 #'
 #' # multi-match example (fake)
 #' y <- left_join(events, teams, by = c("team_id" = "wy_id")) %>%
@@ -47,14 +47,14 @@
 #'   slice(1:10) %>%
 #'   mutate(match_id = as.character(c(rep(1, 5), rep(2, 5))))
 #'
-#' map_df(unique(y$match_id), encode_possession_sequence, data = y,
+#' map_df(unique(y$match_id), fc_sequence_possession, data = y,
 #'                            event_var = "event_name", team_var = "name")
 #'
 #' @import dplyr
 #' @import purrr
 #' @export
 
-encode_possession_sequence <- function(data, event_var, team_var, match = NULL) {
+fc_sequence_possession <- function(data, event_var, team_var, match = NULL) {
 
   if (!is.null(match)) {
     data <- data %>%

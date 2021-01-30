@@ -32,11 +32,11 @@
 #'
 #' # read event and teams data given in package
 #' events <- system.file("extdata", "events_england.json", package = "scoutr") %>%
-#'   read_events()
+#'   fc_read_events()
 #' teams <- system.file("extdata", "teams.json", package = "scoutr") %>%
-#'   read_teams()
+#'   fc_read_teams()
 #'
-#' encode_pass_sequence(events, event_var = "event_name", team_var = "team_id") %>%
+#' fc_sequence_pass(events, event_var = "event_name", team_var = "team_id") %>%
 #'   select(event_name, team_id, pass_id, pass_seq)
 #'
 #' # multi-match example (fake)
@@ -45,14 +45,14 @@
 #'   slice(1:10) %>%
 #'   mutate(match_id = as.character(c(rep(1, 5), rep(2, 5))))
 #'
-#' map_df(unique(y$match_id), encode_pass_sequence, data = y,
+#' map_df(unique(y$match_id), fc_sequence_pass, data = y,
 #'                            event_var = "event_name", team_var = "name")
 #'
 #' @import dplyr
 #' @import purrr
 #' @export
 
-encode_pass_sequence <- function(data, event_var, team_var, match = NULL) {
+fc_sequence_pass <- function(data, event_var, team_var, match = NULL) {
 
   if (!is.null(match)) {
     data <- data %>%

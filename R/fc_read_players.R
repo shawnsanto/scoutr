@@ -26,8 +26,8 @@
 #' @examples
 #' file_path <- system.file("extdata", "players.json", package = "scoutr")
 #'
-#' players <- read_players(file_path)
-#' players_list <- read_players(file_path, tidy_tibble = FALSE)
+#' players <- fc_read_players(file_path)
+#' players_list <- fc_read_players(file_path, tidy_tibble = FALSE)
 #'
 #' @import dplyr
 #' @import purrr
@@ -36,7 +36,7 @@
 #' @importFrom rlang .data
 #' @export
 
-read_players <- function(file, tidy_tibble = TRUE) {
+fc_read_players <- function(file, tidy_tibble = TRUE) {
 
   players <- read_json(file)
 

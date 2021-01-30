@@ -26,19 +26,19 @@
 #'
 #' # read event data given in package
 #' file_path <- system.file("extdata", "events_england.json", package = "scoutr")
-#' events <- read_events(file_path)
+#' events <- fc_read_events(file_path)
 #'
 #' events %>%
 #'   select(event_sec:end_y) %>%
-#'   transform_locations(x = c("start_x", "end_x"), y = c("start_y", "end_y")) %>%
-#'   link_locations(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
+#'   fc_locations_transform(x = c("start_x", "end_x"), y = c("start_y", "end_y")) %>%
+#'   fc_locations_link(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"))
 #'
 #' @import dplyr
 #' @import purrr
 #' @import sf
 #' @export
 
-link_locations <- function(data, start_loc, end_loc) {
+fc_locations_link <- function(data, start_loc, end_loc) {
 
   create_line <- function(start_x, start_y, end_x, end_y) {
     st_linestring(matrix(c(start_x, end_x, start_y, end_y), 2, 2))

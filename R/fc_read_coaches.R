@@ -1,8 +1,8 @@
-#' Read Wyscout soccer competitions data
+#' Read Wyscout soccer coaches data
 #'
-#' This function reads and processes the Wyscout \code{competitions} data.
+#' This function reads and processes the Wyscout \code{coaches} data.
 #'
-#' @param file File path to \code{competitions} JSON data.
+#' @param file File path to \code{coaches} JSON data.
 #' @param tidy_tibble Logical value indicating if the returned object should be
 #'   a tidy tibble or not. If \code{FALSE}, a list is returned.
 #'
@@ -24,10 +24,10 @@
 #' @seealso
 #'
 #' @examples
-#' file_path <- system.file("extdata", "competitions.json", package = "scoutr")
+#' file_path <- system.file("extdata", "coaches.json", package = "scoutr")
 #'
-#' competitions <- read_competitions(file_path)
-#' competitions_list <- read_competitions(file_path, tidy_tibble = FALSE)
+#' coaches <- fc_read_coaches(file_path)
+#' coaches_list <- fc_read_coaches(file_path, tidy_tibble = FALSE)
 #'
 #' @import dplyr
 #' @import purrr
@@ -36,18 +36,23 @@
 #' @importFrom rlang .data
 #' @export
 
-read_competitions <- function(file, tidy_tibble = TRUE) {
+fc_read_coaches <- function(file, tidy_tibble = TRUE) {
 
-  competitions <- read_json(file)
+  coaches <- read_json(file)
 
   if (!tidy_tibble) {
-    return(competitions)
+    return(coaches)
   }
 
-  competitions %>%
+  coaches %>%
     map_df(unlist) %>%
     clean_names() %>%
-    rename(area_alpha_3 = .data$area_alpha3code,
-           area_alpha_2 = .data$area_alpha2code) %>%
-    select(.data$wy_id, .data$name, .data$format, contains("area"), .data$type)
+    rename(passport_area_alpha_3 = .data$passport_area_alpha3code,
+           passport_area_alpha_2 = .data$passport_area_alpha2code) %>%
+    rename(birth_area_alpha_3 = .data$birth_area_alpha3code,
+           birth_area_alpha_2 = .data$birth_area_alpha2code) %>%
+    mutate(birth_date = as.Date(.data$birth_date)) %>%
+    select(.data$wy_id, .data$first_name, .data$middle_name, .data$last_name,
+           .data$short_name, .data$birth_date, .data$current_team_id,
+           contains("passport_area"), contains("birth_area_"))
 }
