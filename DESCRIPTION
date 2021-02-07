@@ -16,6 +16,7 @@ Imports:
     jsonlite,
     janitor,
     sf,
+    ggplot2,
     rlang
 Encoding: UTF-8
 LazyData: true

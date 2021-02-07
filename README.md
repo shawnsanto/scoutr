@@ -112,24 +112,33 @@ events %>%
 
 # compute velocities
 events %>%
+  select(-starts_with("tag_")) %>%
   fc_locations_transform(x = c("start_x", "end_x"), y = c("start_y", "end_y")) %>%
   fc_sequence_possession(event_var = "event_name", team_var = "team_id") %>%
-  select(match_id, match_period, possession_id, event_sec:end_y) %>% 
-  fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y"),
-                    direction = c("east_west", "north_south")) %>% 
-  select(-match_period, -(start_x:end_y))
+  fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>%
+  fc_locations_link(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>% 
+  fc_velocity_polygon(metric = "east_west_velocity", shape = "square",
+                      fcn = "median", na.rm = TRUE, size = 5, preview_grid = TRUE)
 #> Attributes added: 'units', 'pitch_dimensions'
 #> Pitch dimensions: (105 X 70) meters
-#> # A tibble: 1,768 x 6
-#>   match_id possession_id event_sec duration east_west_veloci… north_south_veloc…
-#>   <chr>            <dbl>     <dbl>    <dbl>             <dbl>              <dbl>
-#> 1 2499719              1      2.76     2.19              8.64               9.28
-#> 2 2499719              1      4.95     1.60             13.2                1.32
-#> 3 2499719              1      6.54     1.60             10.5                1.75
-#> 4 2499719              1      8.14     2.16              2.92               7.78
-#> 5 2499719              1     10.3      2.25             14.5                2.18
-#> # … with 1,763 more rows
 ```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+
+    #> Simple feature collection with 294 features and 1 field
+    #> geometry type:  POLYGON
+    #> dimension:      XY
+    #> bbox:           xmin: 0 ymin: 0 xmax: 105 ymax: 70
+    #> CRS:            NA
+    #> # A tibble: 294 x 2
+    #>                           geometry median_east_west_velocity
+    #> *                        <POLYGON>                     <dbl>
+    #> 1      ((0 0, 5 0, 5 5, 0 5, 0 0))                      71.4
+    #> 2    ((5 0, 10 0, 10 5, 5 5, 5 0))                      73.3
+    #> 3 ((10 0, 15 0, 15 5, 10 5, 10 0))                      71.4
+    #> 4 ((15 0, 20 0, 20 5, 15 5, 15 0))                      24.8
+    #> 5 ((20 0, 25 0, 25 5, 20 5, 20 0))                      10.3
+    #> # … with 289 more rows
 
 ## References
 
