@@ -8,8 +8,7 @@ output: github_document
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
+  fig.path = "man/figures/README-"
 )
 options(tibble.print_min = 5, tibble.print_max = 5)
 ```
@@ -39,9 +38,12 @@ devtools::install_github("shawnsanto/scoutr")
 
 ## Usage
 
-```{r message = FALSE}
+### Data manipulation
+
+```{r message = FALSE, fig.align='center'}
 library(scoutr)
 library(dplyr)
+library(ggplot2)
 
 # read and preview some event data
 path <- system.file("extdata", "events_england.json", package = "scoutr")
@@ -73,8 +75,79 @@ events %>%
   fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>%
   fc_locations_link(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>% 
   fc_velocity_polygon(metric = "east_west_velocity", shape = "square",
-                      fcn = "median", na.rm = TRUE, size = 5, preview_grid = TRUE)
+                      fcn = "median", na.rm = TRUE, size = 5)
 ```
+
+### Data visualization
+
+```{r fig.width=9, fig.height=6, fig.align='center'}
+events %>% 
+  fc_locations_transform(x = c("start_x", "end_x"), 
+                         y = c("start_y", "end_y"),
+                         dim = c(105, 70), units = "meters") %>% 
+  filter(event_name == "Pass") %>% 
+  ggplot(mapping = aes(x = start_x, y = start_y)) +
+  fc_annotate_pitch(palette = "classic") +
+  geom_point(color = "grey70") +
+  fc_theme_classic()
+```
+
+<br/>
+
+```{r fig.height=9, fig.width=6, fig.align='center'}
+events %>% 
+  filter(event_name %in% c("Pass", "Shot")) %>% 
+  ggplot(mapping = aes(start_x, start_y)) +
+  fc_annotate_pitch(dimensions = c(100, 100), palette = "bw", coord_flip = TRUE) +
+  geom_point(aes(color = event_name), size = 2) +
+  scale_color_manual(values = c("grey70", "red")) +
+  labs(color = "Event") +
+  coord_flip() +
+  fc_theme_bw() +
+  theme(legend.position = "bottom", aspect.ratio = 105 / 70)
+```
+
+<br/>
+
+```{r fig.width=9, fig.height=6, fig.align='center'}
+events %>% 
+  filter(event_name == "Shot") %>% 
+  ggplot(mapping = aes(start_x, start_y)) +
+  fc_annotate_pitch(dimensions = c(100, 100)) +
+  fc_annotate_arrow(x = 50, y = -10) +
+  geom_point(aes(color = team_id), size = 3) +
+  labs(color = "Team ID", title = "Shots on goal") +
+  fc_theme_gw() +
+  theme(legend.position = "bottom")
+```
+
+<br/>
+
+### Themes
+
+```{r echo=FALSE, fig.align='center', fig.height=9, fig.width=10}
+library(patchwork)
+p1 <- ggplot() + fc_annotate_pitch(palette = "bw") + 
+  labs(title = "  Black-white: fc_theme_bw()") + fc_theme_bw()
+p2 <- ggplot() + fc_annotate_pitch(palette = "classic") + 
+  labs(title = "  Classic: fc_theme_classic()") + fc_theme_classic() +
+  theme(plot.title = element_text(colour = "white"))
+p3 <- ggplot() + fc_annotate_pitch(palette = "dark") + 
+  labs(title = "  Dark: fc_theme_dark()") + fc_theme_dark() +
+  theme(plot.title = element_text(colour = "white"))
+p4 <- ggplot() + fc_annotate_pitch(palette = "gw") + 
+  labs(title = "  Grey-white: fc_theme_gw()") + fc_theme_gw()
+p5 <- ggplot() + fc_annotate_pitch(palette = "smurf") + 
+  labs(title = "  Smurf: fc_theme_smurf()") + fc_theme_smurf() +
+  theme(plot.title = element_text(colour = "white"))
+p6 <- ggplot() + fc_annotate_pitch(palette = "wc") + 
+  labs(title = "  World Cup: fc_theme_wc()") + fc_theme_wc() +
+  theme(plot.title = element_text(colour = "white"))
+
+p1 + p2 + p3 + p4 + p5 + p6 +
+  plot_layout(ncol = 2)
+```
+
 
 ## References
 

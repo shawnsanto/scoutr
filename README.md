@@ -31,9 +31,12 @@ devtools::install_github("shawnsanto/scoutr")
 
 ## Usage
 
+### Data manipulation
+
 ``` r
 library(scoutr)
 library(dplyr)
+library(ggplot2)
 
 # read and preview some event data
 path <- system.file("extdata", "events_england.json", package = "scoutr")
@@ -118,27 +121,81 @@ events %>%
   fc_velocity_event(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>%
   fc_locations_link(start_loc = c("start_x", "start_y"), end_loc = c("end_x", "end_y")) %>% 
   fc_velocity_polygon(metric = "east_west_velocity", shape = "square",
-                      fcn = "median", na.rm = TRUE, size = 5, preview_grid = TRUE)
+                      fcn = "median", na.rm = TRUE, size = 5)
+#> Attributes added: 'units', 'pitch_dimensions'
+#> Pitch dimensions: (105 X 70) meters
+#> Simple feature collection with 294 features and 1 field
+#> geometry type:  POLYGON
+#> dimension:      XY
+#> bbox:           xmin: 0 ymin: 0 xmax: 105 ymax: 70
+#> CRS:            NA
+#> # A tibble: 294 x 2
+#>                           geometry median_east_west_velocity
+#> *                        <POLYGON>                     <dbl>
+#> 1      ((0 0, 5 0, 5 5, 0 5, 0 0))                      71.4
+#> 2    ((5 0, 10 0, 10 5, 5 5, 5 0))                      73.3
+#> 3 ((10 0, 15 0, 15 5, 10 5, 10 0))                      71.4
+#> 4 ((15 0, 20 0, 20 5, 15 5, 15 0))                      24.8
+#> 5 ((20 0, 25 0, 25 5, 20 5, 20 0))                      10.3
+#> # … with 289 more rows
+```
+
+### Data visualization
+
+``` r
+events %>% 
+  fc_locations_transform(x = c("start_x", "end_x"), 
+                         y = c("start_y", "end_y"),
+                         dim = c(105, 70), units = "meters") %>% 
+  filter(event_name == "Pass") %>% 
+  ggplot(mapping = aes(x = start_x, y = start_y)) +
+  fc_annotate_pitch(palette = "classic") +
+  geom_point(color = "grey70") +
+  fc_theme_classic()
 #> Attributes added: 'units', 'pitch_dimensions'
 #> Pitch dimensions: (105 X 70) meters
 ```
 
-<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
 
-    #> Simple feature collection with 294 features and 1 field
-    #> geometry type:  POLYGON
-    #> dimension:      XY
-    #> bbox:           xmin: 0 ymin: 0 xmax: 105 ymax: 70
-    #> CRS:            NA
-    #> # A tibble: 294 x 2
-    #>                           geometry median_east_west_velocity
-    #> *                        <POLYGON>                     <dbl>
-    #> 1      ((0 0, 5 0, 5 5, 0 5, 0 0))                      71.4
-    #> 2    ((5 0, 10 0, 10 5, 5 5, 5 0))                      73.3
-    #> 3 ((10 0, 15 0, 15 5, 10 5, 10 0))                      71.4
-    #> 4 ((15 0, 20 0, 20 5, 15 5, 15 0))                      24.8
-    #> 5 ((20 0, 25 0, 25 5, 20 5, 20 0))                      10.3
-    #> # … with 289 more rows
+<br/>
+
+``` r
+events %>% 
+  filter(event_name %in% c("Pass", "Shot")) %>% 
+  ggplot(mapping = aes(start_x, start_y)) +
+  fc_annotate_pitch(dimensions = c(100, 100), palette = "bw", coord_flip = TRUE) +
+  geom_point(aes(color = event_name), size = 2) +
+  scale_color_manual(values = c("grey70", "red")) +
+  labs(color = "Event") +
+  coord_flip() +
+  fc_theme_bw() +
+  theme(legend.position = "bottom", aspect.ratio = 105 / 70)
+```
+
+<img src="man/figures/README-unnamed-chunk-5-1.png" style="display: block; margin: auto;" />
+
+<br/>
+
+``` r
+events %>% 
+  filter(event_name == "Shot") %>% 
+  ggplot(mapping = aes(start_x, start_y)) +
+  fc_annotate_pitch(dimensions = c(100, 100)) +
+  fc_annotate_arrow(x = 50, y = -10) +
+  geom_point(aes(color = team_id), size = 3) +
+  labs(color = "Team ID", title = "Shots on goal") +
+  fc_theme_gw() +
+  theme(legend.position = "bottom")
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" style="display: block; margin: auto;" />
+
+<br/>
+
+### Themes
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
 
 ## References
 
